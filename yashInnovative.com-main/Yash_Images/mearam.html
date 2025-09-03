@@ -1,0 +1,232 @@
+<?php
+/**
+ * Sample implementation of the Custom Header feature
+ *
+ * @link    https://developer.wordpress.org/themes/functionality/custom-headers/
+ *
+ * @package Corpiva
+ */
+function corpiva_custom_header_setup() {
+    add_theme_support( 'custom-header', apply_filters( 'corpiva_custom_header_args', array(
+        'default-image'          => '',
+        'default-text-color'     => '161C2D',
+        'width'                  => 1920,
+        'height'                 => 200,
+        'flex-height'            => true,
+        'wp-head-callback'       => 'corpiva_header_style',
+    ) ) );
+}
+add_action( 'after_setup_theme', 'corpiva_custom_header_setup' );
+
+if ( ! function_exists( 'corpiva_header_style' ) ) :
+    /**
+     * Styles the header image and text displayed on the blog.
+     *
+     * @see corpiva_custom_header_setup().
+     */
+    function corpiva_header_style() {
+        $header_text_color = get_header_textcolor();
+        ?>
+        <style type="text/css">
+        <?php
+        if ( ! display_header_text() ) :
+        ?>
+            .site-title,
+            .site-description {
+                position: absolute;
+                clip: rect(1px, 1px, 1px, 1px);
+            }
+        <?php
+        else :
+        ?>
+            body header .site-title,
+            body header .site-description {
+                color: #<?php echo esc_attr( $header_text_color ); ?>;
+            }
+        <?php endif; ?>
+        </style>
+        <?php
+    }
+endif;
+?>
+
+<?php  do_action('corpiva_site_preloader'); ?>	
+<?php  do_action('corpiva_wp_hdr_image'); ?>
+<?php 
+$corpiva_hs_hdr_sticky = get_theme_mod( 'corpiva_hs_hdr_sticky','1');
+?>
+<header id="dt_header" class="dt_header header--one">
+	<div class="dt_header-inner">
+		<div class="dt_header-topbar dt-d-lg-block dt-d-none">
+			<?php do_action('corpiva_site_header'); ?>
+		</div>
+		<div class="dt_header-navwrapper">
+			<div class="dt_header-navwrapperinner">
+				<!--=== / Start: DT_Navbar / === -->
+				<div class="dt_navbar dt-d-none dt-d-lg-block">
+					<div class="dt_navbar-wrapper <?php if($corpiva_hs_hdr_sticky=='1'): esc_attr_e('is--sticky','corpiva'); endif; ?>">
+						<div class="dt-container">
+							<div class="dt-row">
+								<div class="dt-col-2 dt-my-auto">
+									<div class="site--logo">
+										<?php do_action('corpiva_site_logo'); ?>
+									</div>
+								</div>
+								<div class="dt-col-10 dt-my-auto">
+									<div class="dt_navbar-menu">
+										<nav class="dt_navbar-nav">
+											<!-- Horizontal Navbar with Dropdowns -->
+											<ul>
+												<li class="dropdown">
+													<a href="#">Menu Item 1</a>
+													<div class="dropdown-content">
+														<div class="left">
+															<ul>
+																<li><a href="#">Sub Item 1</a></li>
+																<li><a href="#">Sub Item 2</a></li>
+																<li><a href="#">Sub Item 3</a></li>
+															</ul>
+														</div>
+														<div class="right">
+															<img id="dropdown-image" src="" alt="Image" />
+														</div>
+													</div>
+												</li>
+												<li><a href="#">Menu Item 2</a></li>
+												<li><a href="#">Menu Item 3</a></li>
+												<li><a href="#">Menu Item 4</a></li>
+											</ul>
+										</nav>
+										<div class="dt_navbar-right">
+											<ul class="dt_navbar-list-right">
+												<?php do_action('corpiva_hdr_account'); ?>
+												<?php do_action('corpiva_woo_cart'); ?>
+												<?php do_action('corpiva_site_main_search'); ?>
+												<?php do_action('corpiva_header_button'); ?>
+												<?php do_action('corpiva_header_contact'); ?>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--=== / End: DT_Navbar / === -->
+			</div>
+		</div>
+	</div>
+</header>
+
+<style>
+/* Basic Navbar Styling */
+.dt_navbar-nav {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dt_navbar-nav > li {
+  position: relative;
+  margin-right: 20px; /* Add spacing between menu items */
+}
+
+.dt_navbar-nav > li > a {
+  padding: 15px;
+  color: #333;
+  text-decoration: none;
+  display: block;
+}
+
+/* Dropdown Menu Styling */
+.dropdown:hover .dropdown-content {
+  display: flex;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  width: 100%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Left side (vertical buttons) */
+.dropdown-content .left {
+  width: 250px;
+  padding: 20px;
+}
+
+.dropdown-content .left ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-content .left ul li {
+  margin-bottom: 20px;
+}
+
+.dropdown-content .left ul li a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+}
+
+.dropdown-content .left ul li a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Right side (image area) */
+.dropdown-content .right {
+  flex-grow: 1;
+  padding: 20px;
+  text-align: center;
+}
+
+.dropdown-content .right img {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+}
+
+/* Flexbox for aligning left and right side */
+.dropdown-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Make sure the navbar is horizontally aligned */
+.dt_navbar-nav > li > a {
+  display: inline-block;
+  padding: 10px 20px;
+}
+
+/* Style adjustments for sticky behavior */
+.is--sticky .dt_navbar-nav {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 999;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+</style>
+
+<script>
+// JavaScript for Dropdown Interaction
+document.addEventListener('DOMContentLoaded', function() {
+  const menuOptions = document.querySelectorAll('.dropdown > a');
+  const imageDisplay = document.getElementById('dropdown-image');
+
+  menuOptions.forEach(option => {
+    option.addEventListener('mouseenter', function() {
+      const imageSrc = this.getAttribute('data-image');
+      imageDisplay.src = imageSrc;  // Change the image when the option is hovered over
+    });
+  });
+});
+</script>
